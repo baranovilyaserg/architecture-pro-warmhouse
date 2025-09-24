@@ -1,5 +1,5 @@
 @startuml
-title Old Warmhouse Context Diagram
+title Warmhouse Context Diagram
 
 top to bottom direction
 
@@ -10,13 +10,10 @@ Person(specialist, "Specialist", "A specialist of the system Warmhouse")
 
 System(warmhousesystem, "Warmhouse System", "Temperature sensor control and monitoring system")
 
-System(warmhousesensor, "Warmhouse Sensor", "Temperature sensor")
-
 System_Ext(heatingsystem, "Heating system", "External heating system")
 
 Rel(user, warmhousesystem, "Uses the system: get temperature")
-Rel(specialist,warmhousesensor,"Configures sensors")
-Rel(warmhousesystem,warmhousesensor,"Fetches sensor data")
-Rel(warmhousesensor,heatingsystem,"Receive temperature data")
+Rel(specialist,warmhousesystem,"Сonfigures sensors")
+Rel(warmhousesystem,heatingsystem,"Fetches temperature data")
 
 @enduml
