@@ -1,0 +1,9 @@
+{
+  "id": 1,
+  "type": "thermostat",
+  "model": "T1000",
+  "status": "active",
+  "home_id": 1,
+  "name": "Living Room Thermostat",
+  "description": "Main thermostat in living room"
+}

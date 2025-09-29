@@ -1,0 +1,267 @@
+openapi: 3.0.3
+info:
+  title: Device Component API
+  version: 1.0.0
+  description: API for managing devices and device telemetry in the smart house system.
+servers:
+  - url: http://localhost:8083
+paths:
+  /devices:
+    get:
+      summary: Get all devices
+      responses:
+        '200':
+          description: List of devices
+          content:
+            application/json:
+              examples:
+                device:
+                  $ref: '/examples/device-example.json'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              example:
+                $ref: '/examples/404-example.json'
+    post:
+      summary: Register a new device
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeviceCreate'
+      responses:
+        '201':
+          description: Device registered
+  /devices/{deviceId}:
+    get:
+      summary: Get device by ID
+      parameters:
+        - in: path
+          name: deviceId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Device details
+          content:
+            application/json:
+              examples:
+                device:
+                  $ref: '/examples/device-example.json'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              example:
+                $ref: '/examples/404-example.json'
+    put:
+      summary: Update device
+      parameters:
+        - in: path
+          name: deviceId
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeviceUpdate'
+      responses:
+        '200':
+          description: Device updated
+    delete:
+      summary: Delete device
+      parameters:
+        - in: path
+          name: deviceId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Device deleted
+  /devices/{deviceId}/telemetry:
+    get:
+      summary: Get telemetry for a device
+      parameters:
+        - in: path
+          name: deviceId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: List of telemetry records
+          content:
+            application/json:
+              examples:
+                telemetry:
+                  $ref: '/examples/telemetry-example.json'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              example:
+                $ref: '/examples/404-example.json'
+    post:
+      summary: Add telemetry record for a device
+      parameters:
+        - in: path
+          name: deviceId
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TelemetryCreate'
+      responses:
+        '201':
+          description: Telemetry record added
+  /telemetry/{telemetryId}:
+    get:
+      summary: Get telemetry record by ID
+      parameters:
+        - in: path
+          name: telemetryId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Telemetry record details
+          content:
+            application/json:
+              examples:
+                telemetry:
+                  $ref: '/examples/telemetry-example.json'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              example:
+                $ref: '/examples/404-example.json'
+    put:
+      summary: Update telemetry record
+      parameters:
+        - in: path
+          name: telemetryId
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TelemetryUpdate'
+      responses:
+        '200':
+          description: Telemetry record updated
+    delete:
+      summary: Delete telemetry record
+      parameters:
+        - in: path
+          name: telemetryId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Telemetry record deleted
+components:
+  schemas:
+    Device:
+      type: object
+      properties:
+        id:
+          type: integer
+        type:
+          type: string
+        model:
+          type: string
+        status:
+          type: string
+        home_id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+    DeviceCreate:
+      type: object
+      required: [type, model, home_id, name]
+      properties:
+        type:
+          type: string
+        model:
+          type: string
+        status:
+          type: string
+        home_id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+    DeviceUpdate:
+      type: object
+      properties:
+        type:
+          type: string
+        model:
+          type: string
+        status:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+    Telemetry:
+      type: object
+      properties:
+        id:
+          type: integer
+        device_id:
+          type: integer
+        timestamp:
+          type: string
+          format: date-time
+        parameter:
+          type: string
+        value:
+          type: number
+        unit:
+          type: string
+    TelemetryCreate:
+      type: object
+      required: [parameter, value, unit, timestamp]
+      properties:
+        parameter:
+          type: string
+        value:
+          type: number
+        unit:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+    TelemetryUpdate:
+      type: object
+      properties:
+        parameter:
+          type: string
+        value:
+          type: number
+        unit:
+          type: string
+        timestamp:
+          type: string
+          format: date-time

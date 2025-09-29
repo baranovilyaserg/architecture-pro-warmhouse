@@ -1,0 +1,242 @@
+openapi: 3.0.3
+info:
+  title: User Component API
+  version: 1.0.0
+  description: API for managing users and their homes (zones) in the smart house system.
+servers:
+  - url: http://localhost:8082
+paths:
+  /users:
+    get:
+      summary: Get all users
+      responses:
+        '200':
+          description: List of users
+          content:
+            application/json:
+              examples:
+                user:
+                  $ref: '/examples/user-example.json'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              example:
+                $ref: '/examples/404-example.json'
+    post:
+      summary: Create a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCreate'
+      responses:
+        '201':
+          description: User created
+  /users/{userId}:
+    get:
+      summary: Get user by ID
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: User details
+          content:
+            application/json:
+              examples:
+                user:
+                  $ref: '/examples/user-example.json'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              example:
+                $ref: '/examples/404-example.json'
+    put:
+      summary: Update user
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserUpdate'
+      responses:
+        '200':
+          description: User updated
+    delete:
+      summary: Delete user
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: User deleted
+  /users/{userId}/homes:
+    get:
+      summary: Get all homes for a user
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: List of homes
+          content:
+            application/json:
+              examples:
+                home:
+                  $ref: '/examples/home-example.json'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              example:
+                $ref: '/examples/404-example.json'
+    post:
+      summary: Create a new home for a user
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HomeCreate'
+      responses:
+        '201':
+          description: Home created
+  /homes/{homeId}:
+    get:
+      summary: Get home by ID
+      parameters:
+        - in: path
+          name: homeId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Home details
+          content:
+            application/json:
+              examples:
+                home:
+                  $ref: '/examples/home-example.json'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              example:
+                $ref: '/examples/404-example.json'
+    put:
+      summary: Update home
+      parameters:
+        - in: path
+          name: homeId
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HomeUpdate'
+      responses:
+        '200':
+          description: Home updated
+    delete:
+      summary: Delete home
+      parameters:
+        - in: path
+          name: homeId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Home deleted
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+    UserCreate:
+      type: object
+      required: [name, email, phone]
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+    UserUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+    Home:
+      type: object
+      properties:
+        id:
+          type: integer
+        address:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        user_id:
+          type: integer
+    HomeCreate:
+      type: object
+      required: [address, name]
+      properties:
+        address:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+    HomeUpdate:
+      type: object
+      properties:
+        address:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
