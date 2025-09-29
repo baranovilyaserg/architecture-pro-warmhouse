@@ -1,0 +1,47 @@
+@startuml
+' ER diagram of main smart home entities
+
+entity "User" as User {
+  *id : int <<PK>>
+  ---
+  name : string
+  email : string
+  phone : string
+}
+
+entity "Home (Zone)" as Home {
+  *id : int <<PK>>
+  ---
+  address : string
+  name : string
+  description : string
+  user_id : int <<FK>>
+}
+
+entity "Device" as Device {
+  *id : int <<PK>>
+  ---
+  type : string
+  model : string
+  status : string
+  home_id : int <<FK>>
+  name : string
+  description : string
+}
+
+entity "Device Telemetry" as Telemetry {
+  *id : int <<PK>>
+  ---
+  device_id : int <<FK>>
+  timestamp : datetime
+  parameter : string
+  value : string
+  unit : string
+}
+
+' Relationships
+User ||--o{ Home : "owns"
+Home ||--o{ Device : "contains"
+Device ||--o{ Telemetry : "generates"
+
+@enduml
