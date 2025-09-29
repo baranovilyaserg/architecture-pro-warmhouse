@@ -1,0 +1,30 @@
+@startuml
+title Smarthouse Container Diagram
+
+top to bottom direction
+
+!includeurl https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/master/C4_Component.puml
+
+Person(user, "User", "A user of the system Smarthouse")
+Person(admin, "Administrator", "An administrator managing the system")
+System(SmartHouseSystem, "SmartHouse System", "System managing diveces smart house")
+
+Container_Boundary(SmartHouseSystem, "SmartHouse System") {
+  Container(WebApp, "Web Application", "Java, Spring", "Handles user interactions")
+  Container(MobileApp, "Mobile Application", "Kotlin, Swift", "Handles user interactions")
+  Container(APIApplicationBackend, "APIApplicationBackend", "Java, Python", "Provide functionality api application")
+  Container(Database, "Database", "PostgreSQL", "Stores user data and smart device data")
+}
+
+System_Ext(SmartDevices, "Smart Devices", "External smart home devices")
+
+Rel(user, WebApp, "Uses the system")
+Rel(user, MobileApp, "Uses the system")
+Rel(admin, WebApp,"Manages the system")
+Rel(WebApp, APIApplicationBackend, "Processes smarthome functionality")
+Rel(MobileApp, APIApplicationBackend, "Processes smarthome functionality")
+Rel(APIApplicationBackend, Database, "Reads/Writes user/smartdevices data")
+Rel(APIApplicationBackend, SmartDevices, "Send/Receive data")
+
+
+@enduml
