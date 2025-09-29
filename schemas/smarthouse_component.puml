@@ -1,30 +1,50 @@
 @startuml
-title Smarthouse Container Diagram
+title SmartHouse APIApplicationBackend Component Diagram
 
 top to bottom direction
 
 !includeurl https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/master/C4_Component.puml
 
-Person(user, "User", "A user of the system Smarthouse")
-Person(admin, "Administrator", "An administrator managing the system")
-System(SmartHouseSystem, "SmartHouse System", "System managing diveces smart house")
-
-Container_Boundary(SmartHouseSystem, "SmartHouse System") {
+Container_Boundary(SmartHouse, "SmartHouse System") {
   Container(WebApp, "Web Application", "Java, Spring", "Handles user interactions")
-  Container(MobileApp, "Mobile Application", "Kotlin, Swift", "Handles user interactions")
-  Container(APIApplicationBackend, "APIApplicationBackend", "Java, Python", "Provide functionality api application")
-  Container(Database, "Database", "PostgreSQL", "Stores user data and smart device data")
+  Container(APIApplicationBackend, "Smart House BackEnd Application", "Java, Spring", "Handles user interactions")
+  Container(Database, "Database", "PostgreSQL", "Stores user and devices data")
+}
+
+Container(APIApplicationBackend, "Provide functionality api application", "Java, Python") {
+  Component(AuthController, "AuthController", "Handles authentication and authorization")
+  Component(ResetPasswordController, "ResPassController", "Allow user reset password")
+  Component(SecurityComponent, "SecurityComponent", "Signing in, changing password, etc.")
+  Component(EmailComponent, "EmailComponent", "Sends emails to user")
+  Component(UserController, "UserController", "Manages user profiles")
+  Component(UserComponent, "UserComponent", "Manages user profiles")
+
+  Component(DevicesController, "DevicesController", "Handles operations with devices")
+  Component(DevicesComponent, "DevicesComponent", "Manages devices")
+
+  Component(RepositoryLayer, "Repository Layer", "Data access logic")
 }
 
 System_Ext(SmartDevices, "Smart Devices", "External smart home devices")
-
-Rel(user, WebApp, "Uses the system")
-Rel(user, MobileApp, "Uses the system")
-Rel(admin, WebApp,"Manages the system")
-Rel(WebApp, APIApplicationBackend, "Processes smarthome functionality")
-Rel(MobileApp, APIApplicationBackend, "Processes smarthome functionality")
-Rel(APIApplicationBackend, Database, "Reads/Writes user/smartdevices data")
-Rel(APIApplicationBackend, SmartDevices, "Send/Receive data")
+System_Ext(EmailSystem, "E-mail system", "External E-mail system")
 
 
+Rel(EmailComponent,EmailSystem,"Uses")
+
+Rel(WebApp,APIApplicationBackend,"User interact with the system")
+
+Rel(AuthController,SecurityComponent,"Uses")
+Rel(ResetPasswordController,SecurityComponent,"Uses")
+Rel(ResetPasswordController,EmailComponent,"Uses")
+Rel(SecurityComponent,RepositoryLayer,"Uses")
+
+Rel(UserController,UserComponent,"Uses")
+Rel(UserComponent,RepositoryLayer,"Uses")
+
+Rel(DevicesController,DevicesComponent,"Uses")
+Rel(DevicesComponent,SmartDevices,"Reads/Writes data")
+Rel(DevicesComponent,UserComponent,"Uses")
+Rel(DevicesComponent,RepositoryLayer,"Uses")
+
+Rel(RepositoryLayer,Database,"Reads/Writes user data")
 @enduml
