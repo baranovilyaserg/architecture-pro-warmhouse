@@ -1,6 +1,19 @@
 version: '3.8'
 
 services:
+  devicecontroller:
+    build:
+      context: ./devicecontroller
+      dockerfile: Dockerfile
+    container_name: devicecontroller
+    environment:
+      - DEVICE_API_URL=http://devicecomponent:8083/devices
+    ports:
+      - "8082:8082"
+      - "41200:41200"
+    restart: unless-stopped
+    networks:
+      - smarthome-network
   postgres:
     image: postgres:16-alpine
     container_name: smarthome-postgres
