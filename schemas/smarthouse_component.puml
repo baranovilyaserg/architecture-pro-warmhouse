@@ -42,7 +42,7 @@ Rel(UserController,UserComponent,"Uses")
 Rel(UserComponent,RepositoryLayer,"Uses")
 
 Rel(DevicesController,DevicesComponent,"Uses")
-Rel(DevicesComponent,SmartDevices,"Reads/Writes data")
+Rel(DevicesController,SmartDevices,"Reads/Writes data")
 Rel(DevicesComponent,UserComponent,"Uses")
 Rel(DevicesComponent,RepositoryLayer,"Uses")
 

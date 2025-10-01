@@ -27,6 +27,8 @@ entity "Device" as Device {
   home_id : int <<FK>>
   name : string
   description : string
+  ip : string
+  port : string
 }
 
 entity "Device Telemetry" as Telemetry {
