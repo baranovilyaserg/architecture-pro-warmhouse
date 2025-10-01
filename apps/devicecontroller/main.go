@@ -35,25 +35,39 @@ var wsClients = make(map[*websocket.Conn]bool)
 var wsUpgrader = websocket.Upgrader{CheckOrigin: func(r *http.Request) bool { return true }}
 
 func main() {
-	// 1. Получить список девайсов с devicecomponent API
-	fetchDevices()
+	   go func() {
+		   time.Sleep(5 * time.Second)
+		   fetchDevices()
+	   }()
 
-	// 2. Запустить генерацию телеметрии в WebSocket
-	go telemetryBroadcaster()
+	   go telemetryBroadcaster()
 
-	r := mux.NewRouter()
-	r.HandleFunc("/devices/{deviceId}/command", handleCommand).Methods("POST")
-	r.HandleFunc("/devices/{deviceId}/telemetry", handleTelemetry).Methods("GET")
-	r.HandleFunc("/ws", wsHandler)
+	   // HTTP API на 8082
+	   go func() {
+		   r := mux.NewRouter()
+		   r.HandleFunc("/devices/{deviceId}/command", handleCommand).Methods("POST")
+		   r.HandleFunc("/devices/{deviceId}/telemetry", handleTelemetry).Methods("GET")
+		   srv := &http.Server{
+			   Addr: ":8082",
+			   Handler: r,
+		   }
+		   log.Println("DeviceController HTTP API started on :8082")
+		   if err := srv.ListenAndServe(); err != nil {
+			   log.Fatalf("HTTP API server error: %v", err)
+		   }
+	   }()
 
-	srv := &http.Server{
-		Addr: ":8082",
-		Handler: r,
-	}
-	log.Println("DeviceController service started on :8082")
-	if err := srv.ListenAndServe(); err != nil {
-		log.Fatalf("Server error: %v", err)
-	}
+	   // WebSocket сервер на 41200
+	   wsRouter := mux.NewRouter()
+	   wsRouter.HandleFunc("/ws", wsHandler)
+	   wsSrv := &http.Server{
+		   Addr: ":41200",
+		   Handler: wsRouter,
+	   }
+	   log.Println("DeviceController WebSocket started on :41200/ws")
+	   if err := wsSrv.ListenAndServe(); err != nil {
+		   log.Fatalf("WebSocket server error: %v", err)
+	   }
 }
 
 func fetchDevices() {
@@ -80,7 +94,7 @@ func fetchDevices() {
 func telemetryBroadcaster() {
 	for {
 		for _, d := range devices {
-			// Здесь можно эмулировать обращение к d.IP:d.Port
+			// ГГенерация телеметрии в веб сокет
 			telemetry := generateTelemetry(d)
 			broadcastTelemetry(telemetry)
 		}
@@ -106,12 +120,14 @@ func generateTelemetry(d Device) Telemetry {
 	default:
 		value = "unknown"
 	}
-	return Telemetry{
-		DeviceID:  d.ID,
-		Timestamp: time.Now().Format(time.RFC3339),
-		Parameter: d.Type,
-		Value:     value,
-	}
+	   // Формат времени без таймзоны (YYYY-MM-DDTHH:MM:SS)
+	   ts := time.Now().Format("2006-01-02T15:04:05")
+	   return Telemetry{
+		   DeviceID:  d.ID,
+		   Timestamp: ts,
+		   Parameter: d.Type,
+		   Value:     value,
+	   }
 }
 
 func broadcastTelemetry(t Telemetry) {

@@ -45,6 +45,22 @@ services:
     networks:
       - smarthome-network
 
+  devicecomponent:
+    build:
+      context: ./devicecomponent
+      dockerfile: Dockerfile
+    container_name: devicecomponent
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://postgres:postgres@postgres:5432/smarthome
+      - DEVICECONTROLLER_WS_URL=ws://devicecontroller:41200/ws
+    depends_on:
+      - postgres
+    ports:
+      - "8083:8083"
+    restart: unless-stopped
+    networks:
+      - smarthome-network
+
   app:
     build:
       context: ./smart_home

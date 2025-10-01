@@ -1,0 +1,52 @@
+{
+  "info": {
+    "name": "DeviceController API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Get device telemetry",
+      "request": {
+        "method": "GET",
+        "url": "http://localhost:8084/devices/1/telemetry"
+      },
+      "response": [
+        {
+          "code": 200,
+          "body": [
+            {
+              "id": 1,
+              "device_id": 1,
+              "timestamp": "2025-09-29T12:00:00Z",
+              "parameter": "temperature",
+              "value": 22.5,
+              "unit": "C"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Send command to device",
+      "request": {
+        "method": "POST",
+        "url": "http://localhost:8084/devices/1/command",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"command\": \"turn_on\",\n  \"parameters\": {\"brightness\": 100}\n}"
+        },
+        "header": [
+          {"key": "Content-Type", "value": "application/json"}
+        ]
+      },
+      "response": [
+        {
+          "code": 200,
+          "body": {
+            "result": "Command sent"
+          }
+        }
+      ]
+    }
+  ]
+}

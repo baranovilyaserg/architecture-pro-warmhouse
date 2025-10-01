@@ -1,0 +1,74 @@
+{
+  "info": {
+    "name": "DeviceComponent API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Get all devices",
+      "request": {
+        "method": "GET",
+        "url": "http://localhost:8083/devices"
+      },
+      "response": [
+        {
+          "code": 200,
+          "body": [
+            {
+              "id": 1,
+              "type": "thermostat",
+              "model": "T1000",
+              "status": "active",
+              "home_id": 1,
+              "name": "Living Room Thermostat",
+              "description": "Main thermostat in living room"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Get device by ID",
+      "request": {
+        "method": "GET",
+        "url": "http://localhost:8083/devices/1"
+      },
+      "response": [
+        {
+          "code": 200,
+          "body": {
+            "id": 1,
+            "type": "thermostat",
+            "model": "T1000",
+            "status": "active",
+            "home_id": 1,
+            "name": "Living Room Thermostat",
+            "description": "Main thermostat in living room"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Get device telemetry",
+      "request": {
+        "method": "GET",
+        "url": "http://localhost:8083/devices/1/telemetry"
+      },
+      "response": [
+        {
+          "code": 200,
+          "body": [
+            {
+              "id": 1,
+              "device_id": 1,
+              "timestamp": "2025-09-29T12:00:00Z",
+              "parameter": "temperature",
+              "value": 22.5,
+              "unit": "C"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
