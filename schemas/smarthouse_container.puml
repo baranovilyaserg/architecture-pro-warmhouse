@@ -12,7 +12,10 @@ System(SmartHouseSystem, "SmartHouse System", "System managing diveces smart hou
 Container_Boundary(SmartHouseSystem, "SmartHouse System") {
   Container(WebApp, "Web Application", "Java, Spring", "Handles user interactions")
   Container(MobileApp, "Mobile Application", "Kotlin, Swift", "Handles user interactions")
-  Container(APIApplicationBackend, "APIApplicationBackend", "Java, Python", "Provide functionality api application")
+  Container(UserDomainContainer, "User Domain Container", "Java, Python", "Functionality of users smart home")
+  Container(DeviceCommandsDomainContainer, "Device Commands Domain Container", "Java, Python", "Functionality smart home devices command")
+  Container(DeviceDomainContainer, "Device Domain Container", "Java, Python", "Functionality smart home devices")
+  Container(TelemetryDomainContainer, "Telemetry Domain Container", "Java, Python", "Functionality smart home devices telemetry")
   Container(Database, "Database", "PostgreSQL", "Stores user data and smart device data")
 }
 
@@ -21,10 +24,16 @@ System_Ext(SmartDevices, "Smart Devices", "External smart home devices")
 Rel(user, WebApp, "Uses the system")
 Rel(user, MobileApp, "Uses the system")
 Rel(admin, WebApp,"Manages the system")
-Rel(WebApp, APIApplicationBackend, "Processes smarthome functionality")
-Rel(MobileApp, APIApplicationBackend, "Processes smarthome functionality")
-Rel(APIApplicationBackend, Database, "Reads/Writes user/smartdevices data")
-Rel(APIApplicationBackend, SmartDevices, "Send/Receive data")
-
-
+Rel(WebApp, DeviceDomainContainer, "Processes smarthome functionality CRUD devices")
+Rel(MobileApp, DeviceDomainContainer, "Processes smarthome functionality CRUD devices")
+Rel(WebApp, DeviceCommandsDomainContainer, "Processes smarthome functionality commands to devices")
+Rel(MobileApp, DeviceCommandsDomainContainer, "Processes smarthome functionality commands to devices")
+Rel(WebApp, UserDomainContainer, "User Authorization")
+Rel(MobileApp, UserDomainContainer, "User Authorization")
+Rel(TelemetryDomainContainer, Database, "Reads/Writes smartdevices data")
+Rel(UserDomainContainer, Database, "Reads/Writes user data")
+Rel(DeviceCommandsDomainContainer, DeviceDomainContainer, "Send request command data and receive response")
+Rel(DeviceDomainContainer, SmartDevices, "Send/Receive data")
+Rel(DeviceDomainContainer, UserDomainContainer, "User and device matching")
+Rel(DeviceDomainContainer, TelemetryDomainContainer, "Async send telemetry data")
 @enduml
